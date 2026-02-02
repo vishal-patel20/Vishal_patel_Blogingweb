@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Blogify</title>
+    <%- include("./parts/header") %>
+</head>
+
+<body class="bg-slate-950 text-white font-sans antialiased">
+
+    <%- include("./parts/navbar") %>
+        <div class="relative pt-24 pb-12">
+            <!-- Hero Section -->
+            <div class="container mx-auto px-6 mb-16 text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+                    Explore <span
+                        class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Ideas</span>
+                    & <br>
+                    Share <span
+                        class="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Stories</span>
+                </h1>
+                <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-slide-up">
+                    Discover a world of fascinating articles, tutorials, and stories from our community of writers.
+                </p>
+                <% if (!locals.user) { %>
+                    <a href="/user/signup" class="btn-gradient inline-block animate-slide-up">Start Writing</a>
+                    <% } else { %>
+                        <a href="/Blog/new-blog" class="btn-gradient inline-block animate-slide-up">Create New Blog</a>
+                        <% } %>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="container mx-auto px-6">
+                <% if (blogs.length===0) { %>
+                    <div class="text-center py-20 animate-fade-in">
+                        <div class="text-6xl mb-4">📝</div>
+                        <h3 class="text-2xl font-bold text-slate-300 mb-2">No blogs yet</h3>
+                        <p class="text-slate-400 mb-8">Be the first to share your story!</p>
+                        <a href="/Blog/new-blog" class="text-purple-400 hover:text-purple-300 font-medium">Create a blog
+                            &rarr;</a>
+                    </div>
+                    <% } else { %>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <% blogs.forEach((blog, index)=> { %>
+                                <div class="glass-card-hover group h-full flex flex-col overflow-hidden animate-scale-in"
+                                    style="animation-delay: <%= index * 100 %>ms">
+                                    <div class="relative h-48 overflow-hidden">
+                                        <img src="<%= blog.Coverimageurl %>"
+                                            class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                            alt="<%= blog.Tittle %>">
+                                        <div
+                                            class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        </div>
+                                    </div>
+                                    <div class="p-6 flex-1 flex flex-col">
+                                        <h5
+                                            class="text-xl font-bold mb-3 text-white line-clamp-2 leading-tight group-hover:text-purple-400 transition-colors">
+                                            <%= blog.Tittle %>
+                                        </h5>
+                                        <p class="text-slate-400 text-sm mb-4 line-clamp-3 flex-1">
+                                            <%= blog.body %>
+                                        </p>
+
+                                        <div
+                                            class="border-t border-white/5 pt-4 mt-auto flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <img src="<%= blog.Createdby.profileImage || `https://ui-avatars.com/api/?name=${blog.Createdby.fullname}` %>"
+                                                    class="w-8 h-8 rounded-full border border-white/10" alt="">
+                                                <span class="text-xs text-slate-400 font-medium">
+                                                    <%= blog.Createdby.fullname %>
+                                                </span>
+                                            </div>
+                                            <a href="/Blog/<%= blog._id%>"
+                                                class="text-purple-400 hover:text-white text-sm font-medium transition-colors">Read
+                                                &rarr;</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+        <%- include("./parts/script") %>
+
+</body>
+
+</html>
