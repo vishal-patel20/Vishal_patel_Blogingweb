@@ -17,12 +17,12 @@ mongoose.connect(process.env.Mongo_url || "mongodb://127.0.0.1:27017/Blogify")
     .catch(err => console.error("MongoDB connection error:", err));
 
 app.set("view engine", "ejs")
-app.set("views", path.resolve("views/"))
+app.set("views", path.join(__dirname, "views"))
 
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieparser())
 app.use(checkforAuthenticationcookie("Token"))
-app.use(express.static(path.resolve("./public")))
+app.use(express.static(path.join(__dirname, "public")))
 
 app.get("/", async (req, res) => {
     const allBlogs = await Blog.find({})
@@ -34,6 +34,8 @@ app.get("/", async (req, res) => {
 app.use("/user", userroute)
 app.use("/Blog", userBlog)
 
-app.listen(port, () => console.log(`the server start at the ${port}`))
+if (require.main === module) {
+    app.listen(port, () => console.log(`the server start at the ${port}`))
+}
 
 module.exports = app;
