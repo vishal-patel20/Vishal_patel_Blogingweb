@@ -8,13 +8,22 @@ const Blog = require("./models/blog")
 const mongoose = require("mongoose");
 const cookieparser = require("cookie-parser");
 const { checkforAuthenticationcookie } = require("./Middleware/authentication");
+const connectToDatabase = require("./service/connection");
 
 const app = express()
 const port = process.env.PORT || 8000;
 
-mongoose.connect(process.env.Mongo_url || "mongodb://127.0.0.1:27017/Blogify")
-    .then(() => console.log("mongodb connected"))
-    .catch(err => console.error("MongoDB connection error:", err));
+// Middleware to connect to database before handling request
+app.use(async (req, res, next) => {
+    try {
+        await connectToDatabase();
+        next();
+    } catch (error) {
+        console.error("Database connection failed in middleware:", error);
+        res.status(500).send("Internal Server Error: Database Connection Failed");
+    }
+});
+
 
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
