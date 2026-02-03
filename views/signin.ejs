@@ -21,34 +21,43 @@
             <p class="text-slate-400">Please enter your details to sign in.</p>
           </div>
 
-          <form action="/user/signin" method="post" class="space-y-6">
-            <div>
-              <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email address</label>
-              <input type="email" class="input-field" id="email" name="email" placeholder="hello@example.com" required>
+          <% if (locals.error) { %>
+            <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 text-sm text-center">
+              <%= error %>
             </div>
+            <% } %>
 
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <label for="Password" class="block text-sm font-medium text-slate-300">Password</label>
-                <a href="#" class="text-sm text-purple-400 hover:text-purple-300">Forgot password?</a>
+              <form action="/user/signin" method="post" class="space-y-6">
+                <div>
+                  <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email address</label>
+                  <input type="email" class="input-field" id="email" name="email" placeholder="hello@example.com"
+                    required>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <label for="Password" class="block text-sm font-medium text-slate-300">Password</label>
+                    <a href="#" class="text-sm text-purple-400 hover:text-purple-300">Forgot password?</a>
+                  </div>
+                  <input type="password" class="input-field" id="Password" name="password" placeholder="••••••••"
+                    required>
+                </div>
+
+                <button type="submit" class="w-full btn-gradient shadow-lg shadow-purple-900/20">
+                  Sign In
+                </button>
+              </form>
+
+              <div class="mt-8 text-center text-slate-400">
+                Don't have an account?
+                <a href="/user/signup" class="text-purple-400 hover:text-purple-300 font-medium hover:underline">Sign up
+                  for
+                  free</a>
               </div>
-              <input type="password" class="input-field" id="Password" name="password" placeholder="••••••••" required>
-            </div>
 
-            <button type="submit" class="w-full btn-gradient shadow-lg shadow-purple-900/20">
-              Sign In
-            </button>
-          </form>
-
-          <div class="mt-8 text-center text-slate-400">
-            Don't have an account?
-            <a href="/user/signup" class="text-purple-400 hover:text-purple-300 font-medium hover:underline">Sign up for
-              free</a>
-          </div>
-
-          <div class="mt-8 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-500">
-            &copy; <%= new Date().getFullYear() %> Blogify. All rights reserved.
-          </div>
+              <div class="mt-8 pt-6 border-t border-slate-700/50 text-center text-xs text-slate-500">
+                &copy; <%= new Date().getFullYear() %> Blogify. All rights reserved.
+              </div>
         </div>
       </div>
     </div>
