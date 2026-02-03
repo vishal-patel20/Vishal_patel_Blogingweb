@@ -28,20 +28,48 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage: storage });
 
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
 
-route.post("/", upload.single("coverImage"), async (req, res) => {
+const uploadMiddleware = (req, res, next) => {
+  upload.single("coverImage")(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).send("File too large. Maximum size is 5MB.");
+      }
+      return res.status(500).send(err.message);
+    } else if (err) {
+      console.error("Upload Error:", err);
+      return res.status(500).send("Error uploading file: " + err.message);
+    }
+    next();
+  });
+};
+
+route.post("/", uploadMiddleware, async (req, res) => {
   console.log(req.body);
-  const { title, body } = req.body
-  const blog = await userBlog.create({
-    Tittle: title,
-    body: body,
-    Coverimageurl: req.file.path,
-    Createdby: req.user._id,
-  })
 
-  return res.redirect(`/Blog/${blog._id}`)
+  if (!req.file) {
+    return res.status(400).send("Cover image is required.");
+  }
+
+  try {
+    const { title, body } = req.body
+    const blog = await userBlog.create({
+      Tittle: title,
+      body: body,
+      Coverimageurl: req.file.path,
+      Createdby: req.user._id,
+    })
+
+    return res.redirect(`/Blog/${blog._id}`)
+  } catch (error) {
+    console.error("Blog Creation Error:", error);
+    return res.status(500).send("Internal Server Error");
+  }
 })
 
 
